@@ -3,26 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <title>Super Chat temps réel !</title>
-    <style>
-        #zone_chat strong {
-            color: white;
-            background-color: black;
-            padding: 2px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 <h1> Chat temps réel !</h1>
 
 
+
+<!-- formulaire chat  -->
 <section id="zone_chat">
 
 </section>
 
-
-
-<form action="/" method="post" id="formulaire_chat">
+<form action="/chat" method="post" id="formulaire_chat">
     <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
     <input type="submit" id="envoi_message" value="Envoyer" />
 </form>
@@ -40,7 +34,10 @@
     var socket = io.connect('http://localhost:8080');
 
     // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-    var pseudo = prompt('Quel est votre pseudo ?');
+
+
+   var pseudo = prompt('Quel est votre pseudo ?');
+
     socket.emit('nouveau_client', pseudo);
     document.title = pseudo + ' - ' + document.title;
 
@@ -52,7 +49,7 @@
     // Quand un nouveau client se connecte, on affiche l'information
     socket.on('nouveau_client', function(pseudo) {
         $('#zone_chat').append('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
-    })
+    });
 
     // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
     $('#formulaire_chat').submit(function () {
@@ -68,5 +65,7 @@
         $('#zone_chat').append('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
     }
 </script>
+
+
 </body>
 </html>
