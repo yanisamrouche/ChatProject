@@ -21,19 +21,21 @@ User.prototype = {
     },
     create : function (body, callback)
     {
-         let pwd = body.password;
 
-         body.password=bcrypt.hashSync(pwd,10);
-         //mettre les valeurs dans le tableau bind
-        var bind = [];
-        for( prop in body){
-             bind.push(body[prop]);
-         }
-         let sql = `INSERT INTO users(username, fullname, password) VALUES (?, ?, ?)`;
-         pool.query(sql,bind,function (err, lastId) {
-             if(err) throw err;
-             callback(lastId);
-         });
+            let pwd = body.password;
+
+            body.password = bcrypt.hashSync(pwd, 10);
+            //mettre les valeurs dans le tableau bind
+            var bind = [];
+            for (prop in body) {
+                bind.push(body[prop]);
+            }
+            let sql = `INSERT INTO users(username, fullname, email,password) VALUES (?, ?, ?,? )`;
+            pool.query(sql, bind, function (err, lastId) {
+                if (err) throw err;
+                callback(lastId);
+            });
+
     },
     login : function (username,password,callback)
     {

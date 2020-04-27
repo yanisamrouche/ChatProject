@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <title>login</title>
+    <style>
+        body
+        {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /*background-color: rgb(31,55,84);*/
+            background-color: #333;
+        }
+
+
+
+
+
+    </style>
+
+
+
+</head>
+<body class="text-center">
+<form action="/login" method="POST" class="form-signin">
+
+<div class="container">
+
+    <div class="cover-container d-flex w-50 h-50 p-3 mx-auto flex-column ">
+        <div class="jumbotron" >
+<!--            <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>-->
+            <h1 class="h3  mb-3 font-weight-bold font-italic ">Sign in</h1>
+
+            <div class="masthead mb-auto">
+
+
+                <div class="form-group" >
+                    <!--<img class="mb-4" src="login.png" alt="" width="72" height="72">-->
+                    <input type="email" name="email" class="form-control"  placeholder="Email" required autofocus>
+
+                </div>
+
+                <div class="form-group" >
+                    <input type="password" name="password" class="form-control" placeholder="password" required>
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+                    <div class="form-group"  >
+
+                        <input type="submit" class=" btn btn-outline-dark btn-block" value="Sign in">
+
+                        <br/>
+                        <a class="mt-5 mb-3 text-muted" href="/register">Register</a>
+                        <br>
+                        <a class="mt-5 mb-3 text-muted" href="/">Home</a>
+                        <p class="mt-5 mb-3 text-muted">&copy; YanisAmrouche</p>
+                    </div>
+
+
+        </div>
+    </div>
+</div>
+</form>
+</body>
+</html>
