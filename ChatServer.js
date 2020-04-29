@@ -42,66 +42,73 @@ app.use((err,req,res,next)=>{
     res.send(err.message);
 });
 
+/**
+ * List of connected users
+ */
+var users = [];
 
 
-/*
-// Chargement de la page room.html
-app.get('/chat', function (req, res) {
-    res.sendfile(__dirname + '/room.html');
-});
-*/
+
+// pour le temps réel
 
 
 io.sockets.on('connection', function (socket) {
 
+    /**
+     * Utilisateur connecté à la socket
+     */
+    var loggedUser;
 
-    var getLastMessages = function(){
-        pool.query("SELECT pseudo , message from messages",function (error,rows) {
+    /**
+     * Emission d'un événement "nouveau_client" pour chaque utilisateur connecté
+    */
+    for (i = 0; i < users.length; i++) {
+        socket.emit('nouveau_client', users[i]);
+    }
 
-            var messages = [];
-            for(k in rows){
-                var row =rows[k];
-                var message = {
-                    pseudo : row.pseudo,
-                    message : row.message
+//  on informe les autres personnes qu'un utilisateurs ss'est déconnecter
 
-                };
-                messages.push(message);
-            }
-            socket.broadcast.emit('message',messages);
+    socket.on('disconnect', function(pseudo) {
 
-        })
-    };
+        pseudo = ent.encode(pseudo);
+        socket.pseudo = pseudo;
+        if(loggedUser !== undefined){
+           // socket.broadcast.emit('dis', pseudo);
+            var userIndex = users.indexOf(loggedUser);
+            if (userIndex !== -1) {
+                users.splice(userIndex, 1);}
+            socket.broadcast.emit('dis', loggedUser);
+        }
 
+    });
 
 
 
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
-    socket.on('nouveau_client', function(pseudo,callback) {
-         //
-         pseudo = ent.encode(pseudo);
-         socket.pseudo = pseudo;
-         socket.broadcast.emit('nouveau_client', pseudo);
-                  //sauvegarder les pseudos dans la bdd
 
-
-         pool.query("INSERT INTO pseudonyme (pseudo) values (?) ",pseudo,(err,res)=>{});
-                 // getLastMessages();
-
-    });
-
-    socket.on('disconnect', function(pseudo) {
+    socket.on('nouveau_client', function (pseudo) {
+      //  socket.broadcast.emit('nouveau_client', pseudo);
         pseudo = ent.encode(pseudo);
         socket.pseudo = pseudo;
-        socket.broadcast.emit('dis', pseudo);
+
+            // Sauvegarde de l'utilisateur et ajout à la liste des connectés
+            loggedUser = pseudo;
+            users.push(loggedUser);
+            io.emit('nouveau_client', loggedUser);
+
+        //sauvegarder les pseudos dans la bdd
+        pool.query("INSERT INTO pseudonyme (pseudo) values (?) ",pseudo,(err,res)=>{});
 
     });
+
+
 
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
     socket.on('message', function (message) {
 
         message = ent.encode(message);
+        //io.emit('message', message);
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
         //sauvegarder les messages dans la bdd
         pool.query("INSERT INTO messages (pseudo , message) values (?,?) ",[socket.pseudo,message],(err,res)=>{});
@@ -115,6 +122,8 @@ io.sockets.on('connection', function (socket) {
 
 
 });
+
+
 
 
 

@@ -18,11 +18,12 @@
 </head>
 
 <body>
+<!--
 <div class="container">
 <nav class="navbar navbar-dark bg-dark">
     <form action="/" method="post" id="disconnect">
     <button id="btn"  class="btn btn-dark my-2 my-sm-0" type="submit" >
-        <a href="http://localhost:8080"  >Log out</a> </button>
+        <a href="http://localhost:8080/login"  >Log out</a> </button>
     </form>
 </nav>
 </div>
@@ -31,28 +32,23 @@
 <h1> Chat temps réel !</h1>
     </div>
 </div>
-<section id="listeUsers">
-    <ul id="users">
-
-    </ul>
-</section>
+-->
 <!-- formulaire chat  -->
 
-<div class="container">
-    <div class="jumbotron">
 
+        <section id="zone_chat">
+            <ul id="messages"></ul><ul id="users">
+            </ul>
 <form action="/chat" method="post" id="formulaire_chat">
 
 
-    <section id="zone_chat">
-
-    </section>
-
     <input type="text" name="message" id="message" placeholder="Votre message..." size="30" autofocus />
-    <input type="submit" id="envoi_message" value="Envoyer" />
+   <!-- <input type="submit" id="envoi_message" value="Envoyer" /> -->
+    <button id="envoi_message" >Envoyer</button>
+
 </form>
-    </div>
-</div>
+
+        </section>
 
 
 
@@ -66,40 +62,68 @@
     // Connexion à socket.io
     var socket = io.connect('http://localhost:8080');
 
+    var users = [];
+
+    var messages = [];
+
 
     // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
 
 
    var pseudo = prompt('Quel est votre pseudo ?');
 
-    socket.emit('nouveau_client', pseudo);
+    socket.emit('nouveau_client', pseudo
+    );
     document.title = pseudo + ' - ' + document.title;
 
     // Quand on reçoit un message, on l'insère dans la page
     socket.on('message', function(data) {
-        insereMessage(data.pseudo, data.message)
+        insereMessage(data.pseudo, data.message);
     });
+
+
 
 
 
     // Quand un nouveau client se connecte, on affiche l'information
+    /**
     socket.on('nouveau_client', function(pseudo) {
 
-        $('#zone_chat').append('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+        $('#messages').append('<p><em><span>' + pseudo + '</span> a rejoint le Chat !</em></p>');
+        scrollToBottom();
     });
 
+     */
+   /**
+    * Connexion d'un nouvel utilisateur
+    */
+    socket.on('nouveau_client', function (pseudo) {
+        $('#users').append($('<li class="' + pseudo + ' new">').html(pseudo));
+        users.push(pseudo);
+        setTimeout(function () {$('#users li.new').removeClass('new');}, 1000);
+    });
+
+
+
     //Quand un nouveau client se déconnecte, on affiche l'information
-
-
+    /**
     socket.on('dis', function (pseudo) {
 
-        $('#zone_chat').append('<p><em> un utilisateur a quitté le Chat !</em></p>');
+        $('#messages').append('<p><em> un utilisateur a quitté le Chat !</em></p>');
+        scrollToBottom();
         });
+     */
 
+    /**
+     * Déconnexion d'un utilisateur
+*/
+    socket.on('dis', function (pseudo) {
+        var selector = '#users li.' + pseudo;
+        $(selector).remove();
 
-
-
-
+       // var userIndex = users.indexOf(pseudo);
+       // if (userIndex !== -1) {users.splice(userIndex, 1);}
+    });
 
 
     // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
@@ -108,13 +132,36 @@
         socket.emit('message', message); // Transmet le message aux autres
         insereMessage(pseudo, message); // Affiche le message aussi sur notre page
         $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+        $('#zone_chat input').focus();
         return false; // Permet de bloquer l'envoi "classique" du formulaire
     });
 
     // Ajoute un message dans la page
     function insereMessage(pseudo, message) {
         if (message != "") {
-            $('#zone_chat').append('<p><strong>' + pseudo + " : " + '</strong> ' + message + '</p>');
+            $('#messages').append($('<li>').html('<p> <span class="pseudo">' + pseudo +  '</span> ' + " : " + message + '</p>'));
+            scrollToBottom();
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Scroll vers le bas de page si l'utilisateur n'est pas remonté pour lire d'anciens messages
+     */
+    function scrollToBottom() {
+        if ($(window).scrollTop() + $(window).height() + 2 * $('#messages li').last().outerHeight() >= $(document).height()) {
+            $("html, body").animate({ scrollTop: $(document).height() }, 0);
         }
     }
 

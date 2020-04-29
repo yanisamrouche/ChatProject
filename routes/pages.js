@@ -32,7 +32,7 @@ router.get('/register',function (req,res) {
 //post login
 router.post('/login',function (req,res,next) {
 
-    user.login(req.body.username, req.body.password, (result)=>{
+    user.login(req.body.email, req.body.password, (result)=>{
         if(result){
            //res.send('logged in as : '+result.username);
            // res.sendfile('./public/room.html');
@@ -40,7 +40,7 @@ router.post('/login',function (req,res,next) {
 
 
         }else {
-            res.send('Username or password incorrect');
+            res.send('email or password incorrect');
         }
     })
 });
@@ -68,7 +68,6 @@ router.post('/register',function (req,res,next) {
 });
 
 router.get('/chat', function (req, res) {
-
     res.sendfile('./public/room.html');
 });
 

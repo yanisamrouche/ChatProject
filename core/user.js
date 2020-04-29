@@ -8,9 +8,9 @@ User.prototype = {
     //trouver l'utilisateur avec id ou username
     find: function (user = null, callback) {
         //si le user = number le retour est field =id
-        //si le user = string le retour est field =username
+        //si le user = string le retour est field =email
         if (user) {
-            var field = Number.isInteger(user) ? 'id' : 'username';
+            var field = Number.isInteger(user) ? 'id' : 'email';
         }
         let sql = `SELECT * FROM users WHERE ${field} = ?`;
         pool.query(sql, user, (err, result) => {
@@ -37,9 +37,9 @@ User.prototype = {
             });
 
     },
-    login : function (username,password,callback)
+    login : function (email,password,callback)
     {
-       this.find(username,function (user  ) {
+       this.find(email,function (user) {
            if(user){
                if(bcrypt.compareSync(password,user.password)){
                    callback(user);
