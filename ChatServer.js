@@ -47,7 +47,10 @@ app.use((err,req,res,next)=>{
  */
 var users = [];
 
-
+/**
+ * Historique des messages
+ */
+var messages = [];
 
 // pour le temps réel
 
@@ -64,6 +67,16 @@ io.sockets.on('connection', function (socket) {
     */
     for (i = 0; i < users.length; i++) {
         socket.emit('nouveau_client', users[i]);
+    }
+
+
+    /**
+     * Emission d'un événement "chat-message" pour chaque message de l'historique
+     */
+    for (i = 0; i < messages.length; i++) {
+        if (messages[i].pseudo !== undefined) {
+            socket.emit('message', messages[i]);}
+
     }
 
 //  on informe les autres personnes qu'un utilisateurs ss'est déconnecter
@@ -108,8 +121,15 @@ io.sockets.on('connection', function (socket) {
     socket.on('message', function (message) {
 
         message = ent.encode(message);
-        //io.emit('message', message);
+        //socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+
+        message.pseudo = loggedUser;
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+        var data = {pseudo: socket.pseudo, message: message}
+        messages.push(data);
+        if (messages.length > 150) {
+            messages.splice(0, 1);
+        }
         //sauvegarder les messages dans la bdd
         pool.query("INSERT INTO messages (pseudo , message) values (?,?) ",[socket.pseudo,message],(err,res)=>{});
 
