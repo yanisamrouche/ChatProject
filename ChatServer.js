@@ -7,11 +7,10 @@ var io = require('socket.io')
 var ent = require('ent'); // Permet de bloquer les caractères HTML
 
 var mustache = require('mustache-express');
-let consolidate = require('consolidate');
 let path = require('path');
 const pool = require('./core/database');
 const pageRouter = require('./routes/pages');
-const session = require('express-session');
+
 
 //pour body parser
 app.use(express.urlencoded({ extended : false }));

@@ -1,7 +1,6 @@
 const express = require('express');
 const User = require('../core/user');
 const router = express.Router();
-
 const user = new User();
 
 var data = {title    : "Super Tchat",
@@ -21,7 +20,7 @@ router.get('/',(req,res,next)=>{
 //home
 
 //login
-router.get('/login',function (req,res) {
+router.get('/login', function (req,res) {
     res.render('login.html');
 });
 
@@ -34,11 +33,8 @@ router.post('/login',function (req,res,next) {
 
     user.login(req.body.email, req.body.password, (result)=>{
         if(result){
-           //res.send('logged in as : '+result.username);
-           // res.sendfile('./public/room.html');
-            res.redirect('http://localhost:8080/chat');
-
-
+            //res.sendfile('./public/room.html');
+            res.sendfile('./public/room.html');
         }else {
             res.send('email or password incorrect');
         }
@@ -67,11 +63,19 @@ router.post('/register',function (req,res,next) {
 
 });
 
-router.get('/chat', function (req, res) {
-    res.sendfile('./public/room.html');
-});
+//si on accéde au tchat sans passé par le login
+const redirectToLogin = (req,res,next)=>{
+    if(User.prototype.login){
+        res.redirect('http://localhost:8080');    }
+    else {
+        next();
+    }
 
 
+}
+
+router.get('/chat',redirectToLogin,function (req, res) {
+    res.sendfile('./public/room.html');});
 
 
 

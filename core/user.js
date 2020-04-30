@@ -37,17 +37,17 @@ User.prototype = {
             });
 
     },
-    login : function (email,password,callback)
-    {
-       this.find(email,function (user) {
-           if(user){
-               if(bcrypt.compareSync(password,user.password)){
-                   callback(user);
-                   return;
-               }
-           }
-           callback(null);
-       });
+    login : function (email,password,callback) {
+        this.find(email, function (user) {
+            if (user) {
+                if (bcrypt.compareSync(password, user.password)) {
+                    callback(user);
+                    return;
+                }
+            }
+            callback(null);
+        });
+
     }
 
 
